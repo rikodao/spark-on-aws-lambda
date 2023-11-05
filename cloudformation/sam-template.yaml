@@ -5,8 +5,6 @@ Metadata:
     Name: SparkOnLambda
     Description: 'The Application creates AWS Lambda with Spark. Run your spark loads 75 to 80% less cost or FREE!! if you are within AWS Lambda free tier limits'
     Author: 'AWS Project Bluebear'
-    SpdxLicenseId: MIT-0
-    LicenseUrl: ../LICENSE.txt
     ReadmeUrl: ../README.md
     Labels:
       - spark
@@ -18,9 +16,6 @@ Metadata:
     SourceCodeUrl: 'https://github.com/aws-samples/spark-on-aws-lambda'
 
 Parameters:
-  BucketName:
-    Type: String
-
   ImageUri:
     Description: 'Mandatory: ECR Uri for the image. If not present, then create and push using the sam-imagebuilder.yaml in the github https://github.com/aws-samples/spark-on-aws-lambda '
     Type: String
@@ -91,9 +86,8 @@ Resources:
       Description: 'Role used by the lambda running spark'
       ManagedPolicyArns:
         - "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
-        - "arn:aws:iam::aws:policy/AmazonS3FullAccess"
-        - "arn:aws:iam::aws:policy/AmazonAthenaFullAccess"
         - "arn:aws:iam::aws:policy/AWSGlueConsoleFullAccess"
+        - "arn:aws:iam::aws:policy/AmazonS3FullAccess"
         - !If
             - "HasAdditionalPolicy"
             - !Ref SparkLambdapermissionPolicyArn
@@ -140,7 +134,7 @@ Resources:
           - Effect: Allow
             Action:
               - s3:Get*
-            Resource: !Sub 'arn:aws:s3:::${ScriptBucket}/*'
+            Resource: !Sub 'arn:aws:s3:::${ScriptBucket}/${SparkScript}'
       Roles:
         - !Ref LambdaRole
 

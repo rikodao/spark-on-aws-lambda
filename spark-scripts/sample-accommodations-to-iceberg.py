@@ -20,15 +20,13 @@ import os
 """
 
 def spark_script():
-    # input_path = os.environ['input_path']
-    # output_path = os.environ['output_path']
-
     aws_region = os.environ['AWS_REGION']
     aws_access_key_id = os.environ['AWS_ACCESS_KEY_ID']
     aws_secret_access_key = os.environ['AWS_SECRET_ACCESS_KEY']
     session_token = os.environ['AWS_SESSION_TOKEN']
-    input_path = "s3a://sparkonlambda-naotoiso-1102/spark-scripts/accommodations.csv"
-    output_path = "s3a://sparkonlambda-naotoiso-1102/output"
+    bucket = os.environ['SCRIPT_BUCKET']
+    input_path = "s3a://" + bucket + "/spark-scripts/accommodations.csv"
+    output_path = "s3a://" + bucket + "/output"
 
     
 

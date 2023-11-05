@@ -13,21 +13,6 @@ formatter = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(messag
 handler.setFormatter(formatter)
 logger.addHandler(handler)
 
-def s3_script_download(s3_bucket_script: str,input_script: str)-> None:
-    """
-    """
-    s3_client = boto3.resource("s3")
-
-    try:
-        logger.info(f'Now downloading script {input_script} in {s3_bucket_script} to /tmp')
-        s3_client.Bucket(s3_bucket_script).download_file(input_script, "/tmp/spark_script.py")
-      
-    except Exception as e :
-        logger.error(f'Error downloading the script {input_script} in {s3_bucket_script}: {e}')
-    else:
-        logger.info(f'Script {input_script} successfully downloaded to /tmp')
-
-
 
 def spark_submit(s3_bucket_script: str,input_script: str, event: dict)-> None:
     """
@@ -84,8 +69,6 @@ def lambda_handler(event, context):
     input_script = os.environ['SPARK_SCRIPT']
     os.environ['INPUT_PATH'] = event.get('INPUT_PATH','')
     os.environ['OUTPUT_PATH'] = event.get('OUTPUT_PATH', '')
-
-    # s3_script_download(s3_bucket_script,input_script)
     
     # Set the environment variables for the Spark application
     spark_submit(s3_bucket_script,input_script, event)
