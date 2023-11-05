@@ -1,4 +1,12 @@
 <h1><p><u>Contents</u></p></h1>
+## How to Deploy
+```
+export ACCOUNT_ID=
+export REGION=
+export GlobalUniqueScriptBucket=
+sam deploy --template-file sam-imagebuilder.yaml --stack-name spark-on-lambda-image-builder --capabilities CAPABILITY_IAM CAPABILITY_NAMED_IAM --resolve-s3 --parameter-overrides 'ParameterKey=FRAMEWORK,ParameterValue=ICEBERG'
+sam deploy --template-file sam-template.yaml --stack-name spark-on-lambda-stack --capabilities CAPABILITY_IAM CAPABILITY_NAMED_IAM --resolve-s3 --image-repository ${ACCOUNT_ID}.dkr.ecr.${REGION}.amazonaws.com/sparkonlambda-spark-on-lambda-image-builder --parameter-overrides 'ParameterKey=ScriptBucket,ParameterValue=${GlobalUniqueScriptBucket} ParameterKey=SparkScript,ParameterValue=spark-scripts ParameterKey=ImageUri,ParameterValue=${ACCOUNT_ID}.dkr.ecr.${REGION}.amazonaws.com/sparkonlambda-spark-on-lambda-image-builder:latest'
+```
 
 ### Please refer the Wikipage for latest updates. https://github.com/aws-samples/spark-on-aws-lambda/wiki
 ### Disclaimer: At present AWS team is not planning to support the Github. The support model is open-source MIT-0 license.

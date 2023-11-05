@@ -18,6 +18,9 @@ Metadata:
     SourceCodeUrl: 'https://github.com/aws-samples/spark-on-aws-lambda'
 
 Parameters:
+  BucketName:
+    Type: String
+
   ImageUri:
     Description: 'Mandatory: ECR Uri for the image. If not present, then create and push using the sam-imagebuilder.yaml in the github https://github.com/aws-samples/spark-on-aws-lambda '
     Type: String
@@ -88,6 +91,9 @@ Resources:
       Description: 'Role used by the lambda running spark'
       ManagedPolicyArns:
         - "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
+        - "arn:aws:iam::aws:policy/AmazonS3FullAccess"
+        - "arn:aws:iam::aws:policy/AmazonAthenaFullAccess"
+        - "arn:aws:iam::aws:policy/AWSGlueConsoleFullAccess"
         - !If
             - "HasAdditionalPolicy"
             - !Ref SparkLambdapermissionPolicyArn
@@ -134,7 +140,7 @@ Resources:
           - Effect: Allow
             Action:
               - s3:Get*
-            Resource: !Sub 'arn:aws:s3:::${ScriptBucket}/${SparkScript}'
+            Resource: !Sub 'arn:aws:s3:::${ScriptBucket}/*'
       Roles:
         - !Ref LambdaRole
 
@@ -171,6 +177,5 @@ Resources:
         Variables:
           SCRIPT_BUCKET: !Ref ScriptBucket
           SPARK_SCRIPT: !Ref SparkScript
-          #INPUT_PATH: !Ref InputPath
-          #OUTPUT_PATH: !Ref OutputPath
-
+          # INPUT_PATH: !Ref InputPath
+          # OUTPUT_PATH: !Ref OutputPath

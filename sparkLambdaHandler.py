@@ -44,7 +44,26 @@ def spark_submit(s3_bucket_script: str,input_script: str, event: dict)-> None:
     # Run the spark-submit command on the local copy of teh script
     try:
         logger.info(f'Spark-Submitting the Spark script {input_script} from {s3_bucket_script}')
-        subprocess.run(["spark-submit", "/tmp/spark_script.py", "--event", json.dumps(event)], check=True, env=os.environ)
+        prosessed = subprocess.run(["spark-submit", "./script/sample-accommodations-to-iceberg.py", "--event", json.dumps(event)], capture_output=True, text=True, check=True, env=os.environ)
+        stdoutstring = prosessed.stdout
+        print(stdoutstring)
+        returncodestring = prosessed.returncode
+        print(stdoutstring)
+        stderrstring = prosessed.stderr
+        print(stderrstring)
+
+    except subprocess.CalledProcessError as e:
+        sys.stderr.write('!!!!!!subprocess.CalledProcessError!!!!!!\n')
+        sys.stderr.write('----------------\n')
+        logger.error(f'Error Spark-Submit with exception: {e}')
+        sys.stderr.write('----------------\n')
+        sys.stderr.write('ret='+str(e.returncode)+'\n')
+        sys.stderr.write('----------------\n')
+        sys.stderr.write('cmd='+str(e.cmd)+'\n')
+        sys.stderr.write('----------------\n')
+        sys.stderr.write('output='+e.output+'\n')
+        raise e
+
     except Exception as e :
         logger.error(f'Error Spark-Submit with exception: {e}')
         raise e
@@ -66,8 +85,7 @@ def lambda_handler(event, context):
     os.environ['INPUT_PATH'] = event.get('INPUT_PATH','')
     os.environ['OUTPUT_PATH'] = event.get('OUTPUT_PATH', '')
 
-    s3_script_download(s3_bucket_script,input_script)
+    # s3_script_download(s3_bucket_script,input_script)
     
     # Set the environment variables for the Spark application
     spark_submit(s3_bucket_script,input_script, event)
-   

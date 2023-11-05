@@ -20,13 +20,17 @@ import os
 """
 
 def spark_script():
-    input_path = os.environ['input_path']
-    output_path = os.environ['output_path']
+    # input_path = os.environ['input_path']
+    # output_path = os.environ['output_path']
 
     aws_region = os.environ['AWS_REGION']
     aws_access_key_id = os.environ['AWS_ACCESS_KEY_ID']
     aws_secret_access_key = os.environ['AWS_SECRET_ACCESS_KEY']
     session_token = os.environ['AWS_SESSION_TOKEN']
+    input_path = "s3a://sparkonlambda-naotoiso-1102/spark-scripts/accommodations.csv"
+    output_path = "s3a://sparkonlambda-naotoiso-1102/output"
+
+    
 
     print(" ******* Input path ", input_path)
     print(" ******* Output path ", output_path)
@@ -85,8 +89,9 @@ def spark_script():
         INSERT INTO AwsDataCatalog.spark_on_lambda.accommodations_iceberg
              SELECT * FROM  source_table ;
     """
-
+    print(" ******* spark.sql(custom_sql_1)")
     spark.sql(custom_sql_1)
+    print(" ******* spark.sql(custom_sql_2)")
     spark.sql(custom_sql_2)
 
 

@@ -3,11 +3,12 @@ FROM public.ecr.aws/lambda/python:3.8
 
 # Setting the compatible versions of libraries
 ARG HADOOP_VERSION=3.2.4
+# ARG AWS_SDK_VERSION=1.11.901
 ARG AWS_SDK_VERSION=1.11.901
 ARG PYSPARK_VERSION=3.3.0
 
 #FRAMEWORK will passed during the Docker build. For Apache Iceberg in somecase downgrading PYSPARK_VERSION to 3.2.0 will be good
-ARG FRAMEWORK
+ARG FRAMEWORK=ICEBERG
 ARG DELTA_FRAMEWORK_VERSION=2.2.0
 ARG HUDI_FRAMEWORK_VERSION=0.12.2
 ARG ICEBERG_FRAMEWORK_VERSION=2.2.0
@@ -57,6 +58,8 @@ RUN chmod -R 755 $SPARK_HOME
 
 # Copy the Pyspark script to container
 COPY sparkLambdaHandler.py ${LAMBDA_TASK_ROOT}
+COPY ./spark-scripts/sample-accommodations-to-iceberg.py ${LAMBDA_TASK_ROOT}/script/
+COPY ./spark-scripts/accommodations.csv ${LAMBDA_TASK_ROOT}/script/
 
 # calling the Lambda handler
 CMD [ "/var/task/sparkLambdaHandler.lambda_handler" ]
